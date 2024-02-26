@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+<ol id="employees"></ol>
+
+@section scripts
+{
+    <script>
+
+
+        $(document).ready(function () {
+            console.log("loaded");
+            var ol = $("#employees");
+
+            $.ajax({
+                type: "Get",
+                url: "/api/values/",
+                dataType: "json",
+                headers: {
+                    "Authorization": "Basic UmVlbWE6MTIz"
+                },
+                success: function (data) {
+                    ol.empty();
+                    for (var i = 0; i < data.length; i++) {
+                        var emp = data[i];
+
+                        ol.append("<li>" + emp.UserName + "</li>");
+                    }
+                },
+                complete: function (jqXHR) {
+                    if (jqXHR.status == '401') {
+                        ol.empty();
+                        ol.append("<li>" + jqXHR.status + " : " + jqXHR.statusText + "</li>");
+                    }
+                }
+            });
+
+
+        });
+    </script>
+}
+

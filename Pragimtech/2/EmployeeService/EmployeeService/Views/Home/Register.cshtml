@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Register</h2>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-12"> New User Registration</div>
+    </div>
+    <div class="row">
+        <div class="col-5"> Email</div>
+        <div class="col-5">
+            <input id="email" type="text" class="form-control"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-5"> Password</div>
+        <div class="col-5">
+            <input id="password" type="text" class="form-control"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-5">Confirm Password</div>
+        <div class="col-5">
+            <input id="confirmPassword" type="text" class="form-control"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-5">
+            <input id="submitBtn" type="submit" value="Register" class="btn btn-primary"/>
+        </div>
+        
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            console.log("page loaded");
+
+            $('#submitBtn').click(function() {
+                
+
+                $.ajax({
+                    type:"Post",
+                    url: "/api/account/register",
+                    dataType: "Json",
+                    data: {
+                        email: $('#email').val(),
+                        password: $('#password').val(),
+                        confirmPassword: $('#confirmPassword').val()
+                    },
+                    success:function(data) {
+                        alert("User register successfully");
+                    },
+                    complete:function(jqXHB) {
+                        alert("Failed to register user!" + jqXHB.responseText);
+                    }
+                });
+            });
+
+
+        })
+    </script>
+}

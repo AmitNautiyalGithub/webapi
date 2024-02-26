@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2>Existing User Login</h2>
+        </div>
+        <a href="" class="btn btn-success">Register</a>
+    </div>
+    <div class="row">
+        <div class="col-5"> UserName</div>
+        <div class="col-5">
+            <input id="usernameTxt" type="text" class="form-control" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-5"> Password</div>
+        <div class="col-5">
+            <input id="password" type="text" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-5">
+            <input id="loginBtn" type="submit" value="Login" class="btn btn-primary"/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <input id="btnGoogleLogin" type="button" value="Login with Google" class="btn btn-success" />
+        </div>
+    </div>
+
+
+    <hr/>
+    <div class="row">
+        <div class="col-5">
+            <p id="token"></p>
+        </div>
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            console.log("page loaded");
+
+            $('#btnGoogleLogin').click(function () {
+                window.location.href = "/api/Account/ExternalLogin?provider=Google&response_type=token&client_id=self&redirect_uri=http%3A%2F%2Flocalhost%3A58963%2Fhome%2Flogin&state=Ze9c879USVphNBzqjI6oqVbBKlp6wwRpl-QqEOmoHEs1";
+            });
+
+            $('#loginBtn').click(function() {
+
+
+                $.ajax({
+                    type: "Post",
+                    url: "/token",
+                    contentType: "application/json",
+                    data: {
+                        userName: $('#usernameTxt').val(),
+                        password: $('#password').val(),
+                        grant_type: "password"
+                    },
+                    success: function(response) {
+                        sessionStorage.setItem("accessToken", response.access_token);
+                        $("#token").text(JSON.stringify(response));
+
+                        window.location.href = "/home/data";
+                    },
+                    error: function(jqXHB) {
+                        alert("Failed to register user!" + jqXHB.responseText);
+                    }
+                });
+            });
+
+
+        })
+    </script>
+}

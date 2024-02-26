@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2>Employee</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <input type="button" id="btnLoadEmployee" class="btn btn-primary" value="Load Employees"/>
+        </div>
+        <div class="col">
+            <input type="button" id="btnLogoff" class="btn btn-success" value="Log Off" />
+        </div>
+    </div>
+    
+    <div class="row">
+        <table class="table table-bordered" id="tblData">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Gender</th>
+                <th>Salary</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            <tr>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr/>
+
+    <div class="row">
+        <span id="message"></span>
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            
+            if (sessionStorage.getItem("accessToken") == null) {
+                window.location.href = "/home/login";
+            }
+
+            $("#btnLogoff").on("click", function() {
+                sessionStorage.removeItem("accessToken");
+                window.location.href = "/home/login";
+            });
+
+            $('#btnLoadEmployee').on("click", function () {
+
+
+                $.ajax({
+                    type: "GET",
+                    url: "/api/employees",
+                    contentType: "application/json",
+                    headers: {
+                        "Authorization": "Bearer " +   sessionStorage.getItem("accessToken")
+                    },
+                    success: function (data) {
+
+                        $("#tbody").empty();
+
+                        $.each(data, function(index, value) {
+
+                            var row = $("<tr><td>" + value.FirstName + "</td>" +
+                                "<td>" + value.LastName + "</td>" +
+                                "<td>" + value.Gender + "</td>" +
+                                "<td>" + value.Salary + "</td>"
+                                );
+
+                            $("#tblData").append(row);
+                        });
+                    },
+                    error: function (jqXHB) {
+
+                        alert("An error occured. " + jqXHB.responseText);
+
+                        if (jqXHB.status == "401") {
+                            window.location.href = "/home/login";
+                        } else {
+                            
+                        }
+                    }
+                });
+            });
+
+
+        })
+    </script>
+}
